@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
  */
 public class App implements Runnable, ActionListener {
 
-    private JLabel chatLog;
+    private JTextArea chatLog;
     private JTextArea chatInput;
 
 //    public void run() {
@@ -79,11 +79,13 @@ public class App implements Runnable, ActionListener {
 //    }
 
     public void run() {
+
         JFrame f = new JFrame ("Hello, World!");
         JComponent panel = new JPanel();
         chatInput = new JTextArea(5,20);
         JButton sendBtn = new JButton("Send");
-        chatLog = new JLabel("<html>Hello,<br> world!</html>");
+        chatLog = new JTextArea("<html>Hello,\n world!</html>");
+        chatLog.setEnabled(false);
         String fakeList[] = {
                 "Kyle",
                 "Wolf",
@@ -95,23 +97,14 @@ public class App implements Runnable, ActionListener {
 
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        sendBtn.addActionListener(this);
         // Turn on automatically adding gaps between components
         layout.setAutoCreateGaps(true);
 
-        // Turn on automatically creating gaps between components that touch
-        // the edge of the container and the container.
         layout.setAutoCreateContainerGaps(true);
-
-        // Create a sequential group for the horizontal axis.
 
         GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
 
-        // The sequential group in turn contains two parallel groups.
-        // One parallel group contains the labels, the other the text fields.
-        // Putting the labels in a parallel group along the horizontal axis
-        // positions them at the same x location.
-        //
-        // Variable indentation is used to reinforce the level of grouping.
         hGroup.addGroup(layout.createParallelGroup().
                 addComponent(chatLog).
                 addComponent(chatInput).
@@ -125,11 +118,6 @@ public class App implements Runnable, ActionListener {
         // Create a sequential group for the vertical axis.
         GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
 
-        // The sequential group contains two parallel groups that align
-        // the contents along the baseline. The first parallel group contains
-        // the first label and text field, and the second parallel group contains
-        // the second label and text field. By using a sequential group
-        // the labels and text fields are positioned vertically after one another.
         vGroup.addGroup(layout.createParallelGroup(
                 GroupLayout.Alignment.BASELINE).
                   addComponent(chatLog).
@@ -187,9 +175,16 @@ public class App implements Runnable, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-
+        System.out.print("called");
         try {
-            chatLog.setText( chatInput.getDocument().getText(0,chatInput.getDocument().getLength()) );
+
+            chatLog.setText(
+                    chatLog.getDocument().getText(0, chatLog.getDocument().getLength())
+                    + "\n"
+                    + chatInput.getText(0,chatInput.getDocument().getLength()) );
+
+            chatInput.setText("");
+
         } catch (BadLocationException e) {
             System.out.print( "something bad happened");
         }
